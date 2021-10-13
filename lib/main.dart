@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:nectar_app/app_router.dart';
 
 void main() {
-  runApp(NectarApp());
+  runApp(NectarApp(
+    appRouter: AppRouter(),
+  ));
 }
 
 class NectarApp extends StatelessWidget {
+  final AppRouter appRouter;
+
+  const NectarApp({Key? key, required this.appRouter}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      debugShowCheckedModeBanner: false,
+      onGenerateRoute: appRouter.generateRoute,
     );
   }
 }

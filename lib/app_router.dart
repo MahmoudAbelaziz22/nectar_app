@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nectar_app/presentation/screens/onBording_Screen/onBording_screen.dart';
 
 class AppRouter {
   Route? generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      // case HomeScreen.routName:
-      //   return MaterialPageRoute(
-      //       builder: (_) => BlocProvider(
-      //             create: (context) => articlesCubit,
-      //             child: HomeScreen(),
-      //           ));
-
+      case OnBordingScreen.routeName:
+        return MaterialPageRoute(builder: (_) => OnBordingScreen());
     }
   }
 }
