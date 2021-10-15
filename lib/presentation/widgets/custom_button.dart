@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
       height: getProportionateScreenHeight(67),
       color: MyColors.myGreen,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(19),
       ),
       onPressed: onPressed,
       child: Text(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nectar_app/constants.dart';
+import 'package:nectar_app/presentation/screens/sign_in_screen/sign_in_screen.dart';
 import 'package:nectar_app/presentation/widgets/custom_button.dart';
 import 'package:nectar_app/size_cofig.dart';
 
@@ -67,7 +67,10 @@ class OnBordingScreen extends StatelessWidget {
                 ),
                 CustomButton(
                   text: 'Get Started',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, SignInScreen.routeName);
+                  },
                 ),
                 SizedBox(
                   height: getProportionateScreenHeight(80),
