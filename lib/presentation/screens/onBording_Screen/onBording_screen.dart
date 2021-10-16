@@ -13,11 +13,13 @@ class OnBordingScreen extends StatelessWidget {
     SizeConfig().init(context);
     // to hide status bar
     SystemChrome.setEnabledSystemUIOverlays([]);
-// to dispalt it: SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
     return Scaffold(
       body: Stack(
         children: [
           Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/background_onbording.png"),
@@ -69,6 +71,7 @@ class OnBordingScreen extends StatelessWidget {
                   text: 'Get Started',
                   onPressed: () {
                     Navigator.pop(context);
+
                     Navigator.pushNamed(context, SignInScreen.routeName);
                   },
                 ),

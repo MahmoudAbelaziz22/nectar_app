@@ -24,11 +24,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  
+  flutter_keyboard_visibility: ^5.1.0
+  fluttertoast: ^8.0.8
+
 dev_dependencies:
+  flutter_native_splash: ^1.2.1
   flutter_test:
     sdk: flutter
-  flutter_native_splash: ^1.2.1
 
 flutter_native_splash:
   color: "#53b175"
