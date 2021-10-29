@@ -12,7 +12,7 @@ class OnBordingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     // to hide status bar
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
     return Scaffold(
       body: Stack(

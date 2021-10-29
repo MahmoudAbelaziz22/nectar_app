@@ -14,8 +14,8 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: SystemUiOverlay.values);
     return Scaffold(
       backgroundColor: MyColors.myWhite,
       extendBodyBehindAppBar: true,
@@ -78,6 +78,7 @@ class SignInScreen extends StatelessWidget {
                     child: TextField(
                       onTap: () {
                         FocusScope.of(context).requestFocus(FocusNode());
+
                         Navigator.pushNamed(context, NumberScreen.routeName);
                       },
                     ),

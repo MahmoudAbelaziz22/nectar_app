@@ -9,3 +9,5 @@ class MyColors {
 const String kNumberNullError = "Please Enter your Number";
 const String kInvalidNumberError = "Please Enter Valid Number";
 const String kTooLongNumberError = "The number is too long";
+const String kAddressNullError = "Please Enter your Address";
+const String kTooShortAddressError = "The address is too short";
