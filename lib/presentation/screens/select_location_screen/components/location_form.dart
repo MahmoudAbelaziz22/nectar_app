@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nectar_app/presentation/screens/sign_up_screen/sign_up_screen.dart';
 import 'package:nectar_app/presentation/widgets/custom_button.dart';
 
 import '../../../../constants.dart';
@@ -87,7 +88,8 @@ class _LocationFormState extends State<LocationForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, SignUpScreen.routeName);
                     //       // if all is go well go to login success screen
                   }
                 })

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,6 +20,7 @@ class PhoneForm extends StatefulWidget {
 class _PhoneFormState extends State<PhoneForm> {
   final _formKey = GlobalKey<FormState>();
   late String phone;
+  late StreamSubscription<bool> keyboardSubscription;
   late FocusNode pin1FocusNode;
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
@@ -196,7 +199,8 @@ class _PhoneFormState extends State<PhoneForm> {
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
 
-    KeyboardVisibilityController().onChange.listen((isVisible) {
+    keyboardSubscription =
+        KeyboardVisibilityController().onChange.listen((isVisible) {
       if (isVisible) {
         final viewInsets = EdgeInsets.fromWindowPadding(
             WidgetsBinding.instance!.window.viewInsets,
@@ -220,6 +224,7 @@ class _PhoneFormState extends State<PhoneForm> {
     pin4FocusNode.dispose();
 
     KeyboardVisibilityController().onChange.listen((isVisible) {}).cancel();
+    keyboardSubscription.cancel();
     super.dispose();
   }
 
