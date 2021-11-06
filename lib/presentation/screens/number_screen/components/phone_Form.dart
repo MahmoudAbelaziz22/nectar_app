@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nectar_app/presentation/screens/home_screen/home_screen.dart';
 import 'package:nectar_app/presentation/screens/select_location_screen/select_location_screen.dart';
 
 import 'package:nectar_app/presentation/widgets/icon_image.dart';
@@ -25,33 +28,66 @@ class _PhoneFormState extends State<PhoneForm> {
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
   late FocusNode pin4FocusNode;
+  late FocusNode pin5FocusNode;
+  late FocusNode pin6FocusNode;
 
   double keyboardHeight = 0;
 
   bool isVerification = false;
+  String dialogCodeDigit = "+20";
+  String verificationCode = '';
+  String verificationId1 = '';
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> loginUser(String phone) async {
+    _auth.verifyPhoneNumber(
+        phoneNumber: phone,
+        timeout: Duration(seconds: 60),
+        verificationCompleted: (AuthCredential credential) async {
+          //   Navigator.of(context).pop();
+          buildToast('verification completed');
+          UserCredential result = await _auth.signInWithCredential(credential);
+
+          User user = result.user!;
+
+          print(user);
+          //This callback would gets called when verification is done auto maticlly
+        },
+        verificationFailed: (exception) {
+          print(exception);
+        },
+        codeSent: (String verificationId, [int? forceResendingToken]) {
+          verificationId1 = verificationId;
+          setState(() {
+            isVerification = true;
+          });
+        },
+        codeAutoRetrievalTimeout: (_) {});
+  }
 
   buildNumberField() {
     return Row(
       children: [
-        IconImage(
-          height: 24.0,
-          width: 34.0,
-          image: "assets/images/eg_flag.png",
-        ),
-        SizedBox(
-          width: getProportionateScreenWidth(10),
-        ),
-        Text(
-          '‎+20',
-          style: TextStyle(
+        CountryCodePicker(
+          onChanged: (country) {},
+          initialSelection: "EG",
+          favorite: ['+20', 'EG', '+966', 'SA'],
+          showCountryOnly: false,
+          dialogTextStyle: TextStyle(
               color: Colors.black,
               fontSize: getProportionateScreenWidth(18),
               fontFamily: 'Gilroy',
               fontWeight: FontWeight.normal),
+          showDropDownButton: true,
+          showFlag: true,
+          showFlagDialog: true,
+          showOnlyCountryWhenClosed: false,
+          flagWidth: 28.0,
         ),
-        SizedBox(
-          width: getProportionateScreenWidth(10),
-        ),
+        // SizedBox(
+        //   width: getProportionateScreenWidth(10),
+        // ),
         Expanded(child: buildNumberFormField()),
       ],
     );
@@ -74,6 +110,7 @@ class _PhoneFormState extends State<PhoneForm> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),
               onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
                 nextFocus(
                     value: value,
                     nextFocusNode: pin2FocusNode,
@@ -90,6 +127,7 @@ class _PhoneFormState extends State<PhoneForm> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),
               onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
                 nextFocus(
                     value: value,
                     nextFocusNode: pin3FocusNode,
@@ -106,10 +144,11 @@ class _PhoneFormState extends State<PhoneForm> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),
               onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
                 nextFocus(
                     value: value,
                     nextFocusNode: pin4FocusNode,
-                    previousFocusNode: pin2FocusNode);
+                    previousFocusNode: pin3FocusNode);
               },
             ),
           ),
@@ -122,15 +161,51 @@ class _PhoneFormState extends State<PhoneForm> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),
               onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin5FocusNode,
+                    previousFocusNode: pin3FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin5FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin6FocusNode,
+                    previousFocusNode: pin4FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin6FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
                 if (value.length == 1) {
-                  pin4FocusNode.unfocus();
+                  pin6FocusNode.unfocus();
                 }
                 if (value.length == 0) {
                   nextFocus(
                       value: value,
-                      nextFocusNode: pin4FocusNode,
-                      previousFocusNode: pin3FocusNode);
+                      nextFocusNode: pin6FocusNode,
+                      previousFocusNode: pin4FocusNode);
                 }
+                print(verificationCode);
               },
             ),
           )
@@ -198,6 +273,9 @@ class _PhoneFormState extends State<PhoneForm> {
     pin2FocusNode = FocusNode();
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
+    pin5FocusNode = FocusNode();
+
+    pin6FocusNode = FocusNode();
 
     keyboardSubscription =
         KeyboardVisibilityController().onChange.listen((isVisible) {
@@ -222,6 +300,8 @@ class _PhoneFormState extends State<PhoneForm> {
     pin2FocusNode.dispose();
     pin3FocusNode.dispose();
     pin4FocusNode.dispose();
+    pin5FocusNode.dispose();
+    pin6FocusNode.dispose();
 
     KeyboardVisibilityController().onChange.listen((isVisible) {}).cancel();
     keyboardSubscription.cancel();
@@ -283,10 +363,25 @@ class _PhoneFormState extends State<PhoneForm> {
                       ),
                     ),
                     FloatingActionButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushNamed(
-                            context, SelectLocationScreen.routeName);
+                      onPressed: () async {
+                        // Navigator.pop(context);
+                        // Navigator.pushNamed(
+                        //     context, SelectLocationScreen.routeName);
+                        AuthCredential credential =
+                            PhoneAuthProvider.credential(
+                                verificationId: verificationId1,
+                                smsCode: verificationCode);
+
+                        UserCredential result =
+                            await _auth.signInWithCredential(credential);
+
+                        User user = result.user!;
+                        print(user);
+                        if (user.uid.isNotEmpty) {
+                          Navigator.pushReplacementNamed(
+                              context, HomeScreen.routeName);
+                          buildToast('Verification done');
+                        }
                       },
                       child: Icon(Icons.arrow_forward_ios),
                       backgroundColor: MyColors.myGreen,
@@ -299,10 +394,13 @@ class _PhoneFormState extends State<PhoneForm> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        setState(() {
-                          isVerification = true;
-                        });
+                        // setState(() {
+                        //   isVerification = true;
+                        // });
                         //       // if all is go well go to login success screen
+                        phone = dialogCodeDigit.trim() + phone.trim();
+                        print(phone);
+                        loginUser(phone);
                       }
                     },
                     child: Icon(Icons.arrow_forward_ios),
