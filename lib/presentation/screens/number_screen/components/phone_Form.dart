@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nectar_app/buiness_logic/phone_authentication_cubit/phone_authentication_cubit.dart';
 import 'package:nectar_app/presentation/screens/home_screen/home_screen.dart';
 import 'package:nectar_app/presentation/screens/select_location_screen/select_location_screen.dart';
 
 import 'package:nectar_app/presentation/widgets/icon_image.dart';
+import 'package:nectar_app/presentation/widgets/loading_indicator.dart';
 
 import '../../../../constants.dart';
 import '../../../../size_cofig.dart';
@@ -39,32 +42,6 @@ class _PhoneFormState extends State<PhoneForm> {
   String verificationId1 = '';
 
   FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<void> loginUser(String phone) async {
-    _auth.verifyPhoneNumber(
-        phoneNumber: phone,
-        timeout: Duration(seconds: 60),
-        verificationCompleted: (AuthCredential credential) async {
-          //   Navigator.of(context).pop();
-          buildToast('verification completed');
-          UserCredential result = await _auth.signInWithCredential(credential);
-
-          User user = result.user!;
-
-          print(user);
-          //This callback would gets called when verification is done auto maticlly
-        },
-        verificationFailed: (exception) {
-          print(exception);
-        },
-        codeSent: (String verificationId, [int? forceResendingToken]) {
-          verificationId1 = verificationId;
-          setState(() {
-            isVerification = true;
-          });
-        },
-        codeAutoRetrievalTimeout: (_) {});
-  }
 
   buildNumberField() {
     return Row(
@@ -310,105 +287,124 @@ class _PhoneFormState extends State<PhoneForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isVerification
-                ? 'Enter your 4-digit code'
-                : 'Enter your mobile number',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: getProportionateScreenWidth(26),
-                fontFamily: 'Gilroy',
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(20),
-          ),
-          Text(
-            isVerification ? 'Code' : 'Mobile Number',
-            style: TextStyle(
-                color: Colors.grey,
-                fontSize: getProportionateScreenWidth(18),
-                fontFamily: 'Gilroy',
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(20),
-          ),
-          isVerification ? buildVerificationField() : buildNumberField(),
-          SizedBox(
-            width: getProportionateScreenWidth(10),
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(430) -
-                getProportionateScreenHeight(keyboardHeight),
-          ),
-          isVerification
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Resend Code',
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: getProportionateScreenWidth(18),
-                            fontFamily: 'Gilroy',
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    FloatingActionButton(
-                      onPressed: () async {
-                        // Navigator.pop(context);
-                        // Navigator.pushNamed(
-                        //     context, SelectLocationScreen.routeName);
-                        AuthCredential credential =
-                            PhoneAuthProvider.credential(
-                                verificationId: verificationId1,
-                                smsCode: verificationCode);
+    return BlocConsumer<PhoneAuthenticationCubit, PhoneAuthenticationState>(
+      listener: (context, state) {
+        if (state is PhoneAuthenticationSuccess) {
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+          buildToast('Verification Success');
+        }
+      },
+      builder: (context, state) {
+        if (state is PhoneAuthenticationLoading) {
+          return LoadingIndicator();
+        } else if (state is PhoneAuthenticationOTPSent) {
+          isVerification = true;
+        }
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isVerification
+                    ? 'Enter your 4-digit code'
+                    : 'Enter your mobile number',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: getProportionateScreenWidth(26),
+                    fontFamily: 'Gilroy',
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(20),
+              ),
+              Text(
+                isVerification ? 'Code' : 'Mobile Number',
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: getProportionateScreenWidth(18),
+                    fontFamily: 'Gilroy',
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(20),
+              ),
+              isVerification ? buildVerificationField() : buildNumberField(),
+              SizedBox(
+                width: getProportionateScreenWidth(10),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(430) -
+                    getProportionateScreenHeight(keyboardHeight),
+              ),
+              isVerification
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Resend Code',
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontSize: getProportionateScreenWidth(18),
+                                fontFamily: 'Gilroy',
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        FloatingActionButton(
+                          onPressed: () async {
+                            // Navigator.pop(context);
+                            // Navigator.pushNamed(
+                            //     context, SelectLocationScreen.routeName);
+                            // AuthCredential credential =
+                            //     PhoneAuthProvider.credential(
+                            //         verificationId: verificationId1,
+                            //         smsCode: verificationCode);
 
-                        UserCredential result =
-                            await _auth.signInWithCredential(credential);
+                            // UserCredential result =
+                            //     await _auth.signInWithCredential(credential);
 
-                        User user = result.user!;
-                        print(user);
-                        if (user.uid.isNotEmpty) {
-                          Navigator.pushReplacementNamed(
-                              context, HomeScreen.routeName);
-                          buildToast('Verification done');
-                        }
-                      },
-                      child: Icon(Icons.arrow_forward_ios),
-                      backgroundColor: MyColors.myGreen,
+                            // User user = result.user!;
+                            // print(user);
+                            // if (user.uid.isNotEmpty) {
+                            //   Navigator.pushReplacementNamed(
+                            //       context, HomeScreen.routeName);
+                            //   buildToast('Verification done');
+                            // }
+                            BlocProvider.of<PhoneAuthenticationCubit>(context)
+                                .login(verificationCode);
+                          },
+                          child: Icon(Icons.arrow_forward_ios),
+                          backgroundColor: MyColors.myGreen,
+                        )
+                      ],
                     )
-                  ],
-                )
-              : Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        // setState(() {
-                        //   isVerification = true;
-                        // });
-                        //       // if all is go well go to login success screen
-                        phone = dialogCodeDigit.trim() + phone.trim();
-                        print(phone);
-                        loginUser(phone);
-                      }
-                    },
-                    child: Icon(Icons.arrow_forward_ios),
-                    backgroundColor: MyColors.myGreen,
-                  ),
-                )
-        ],
-      ),
+                  : Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            // setState(() {
+                            //   isVerification = true;
+                            // });
+                            //       // if all is go well go to login success screen
+                            phone = dialogCodeDigit.trim() + phone.trim();
+                            print(phone);
+                            //           loginUser(phone);
+                            BlocProvider.of<PhoneAuthenticationCubit>(context)
+                                .sendOTP(phone);
+                          }
+                        },
+                        child: Icon(Icons.arrow_forward_ios),
+                        backgroundColor: MyColors.myGreen,
+                      ),
+                    )
+            ],
+          ),
+        );
+      },
     );
   }
 }
