@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nectar_app/constants.dart';
 import 'package:nectar_app/presentation/screens/number_screen/components/phone_Form.dart';
 import 'package:nectar_app/presentation/widgets/custom_back_button.dart';
-import 'package:nectar_app/presentation/widgets/custom_button.dart';
-import 'package:nectar_app/presentation/widgets/icon_image.dart';
 import 'package:nectar_app/size_cofig.dart';
 
 class NumberScreen extends StatelessWidget {
@@ -38,34 +36,11 @@ class NumberScreen extends StatelessWidget {
                   ),
                   CustomBackButton(
                     onPressed: () {
-                      print('oddd');
                       Navigator.pop(context);
                     },
                   ),
                   SizedBox(
                     height: getProportionateScreenHeight(85),
-                  ),
-                  Text(
-                    'Enter your mobile number',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: getProportionateScreenWidth(26),
-                        fontFamily: 'Gilroy',
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(20),
-                  ),
-                  Text(
-                    'Mobile Number',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: getProportionateScreenWidth(18),
-                        fontFamily: 'Gilroy',
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(20),
                   ),
                   PhoneForm(),
                   SizedBox(

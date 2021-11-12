@@ -1,11 +1,17 @@
 import 'dart:async';
 
+import 'package:country_code_picker/country_code_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nectar_app/buiness_logic/phone_authentication_cubit/phone_authentication_cubit.dart';
+import 'package:nectar_app/presentation/screens/home_screen/home_screen.dart';
+import 'package:nectar_app/presentation/screens/select_location_screen/select_location_screen.dart';
 
-import 'package:nectar_app/presentation/widgets/custom_button.dart';
 import 'package:nectar_app/presentation/widgets/icon_image.dart';
+import 'package:nectar_app/presentation/widgets/loading_indicator.dart';
 
 import '../../../../constants.dart';
 import '../../../../size_cofig.dart';
@@ -20,7 +26,171 @@ class PhoneForm extends StatefulWidget {
 class _PhoneFormState extends State<PhoneForm> {
   final _formKey = GlobalKey<FormState>();
   late String phone;
+  late StreamSubscription<bool> keyboardSubscription;
+  late FocusNode pin1FocusNode;
+  late FocusNode pin2FocusNode;
+  late FocusNode pin3FocusNode;
+  late FocusNode pin4FocusNode;
+  late FocusNode pin5FocusNode;
+  late FocusNode pin6FocusNode;
+
   double keyboardHeight = 0;
+
+  bool isVerification = false;
+  String dialogCodeDigit = "+20";
+  String verificationCode = '';
+  String verificationId1 = '';
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  buildNumberField() {
+    return Row(
+      children: [
+        CountryCodePicker(
+          onChanged: (country) {},
+          initialSelection: "EG",
+          favorite: ['+20', 'EG', '+966', 'SA'],
+          showCountryOnly: false,
+          dialogTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: getProportionateScreenWidth(18),
+              fontFamily: 'Gilroy',
+              fontWeight: FontWeight.normal),
+          showDropDownButton: true,
+          showFlag: true,
+          showFlagDialog: true,
+          showOnlyCountryWhenClosed: false,
+          flagWidth: 28.0,
+        ),
+        // SizedBox(
+        //   width: getProportionateScreenWidth(10),
+        // ),
+        Expanded(child: buildNumberFormField()),
+      ],
+    );
+  }
+
+  buildVerificationField() {
+    return Padding(
+      padding:
+          EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin1FocusNode,
+              autofocus: true,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin2FocusNode,
+                    previousFocusNode: pin1FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin2FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin3FocusNode,
+                    previousFocusNode: pin1FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin3FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin4FocusNode,
+                    previousFocusNode: pin3FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin4FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin5FocusNode,
+                    previousFocusNode: pin3FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin5FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                nextFocus(
+                    value: value,
+                    nextFocusNode: pin6FocusNode,
+                    previousFocusNode: pin4FocusNode);
+              },
+            ),
+          ),
+          SizedBox(
+            width: getProportionateScreenWidth(45),
+            child: TextFormField(
+              focusNode: pin6FocusNode,
+              keyboardType: TextInputType.number,
+              obscureText: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+              onChanged: (value) {
+                verificationCode = verificationCode.trim() + value.trim();
+                if (value.length == 1) {
+                  pin6FocusNode.unfocus();
+                }
+                if (value.length == 0) {
+                  nextFocus(
+                      value: value,
+                      nextFocusNode: pin6FocusNode,
+                      previousFocusNode: pin4FocusNode);
+                }
+                print(verificationCode);
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   TextFormField buildNumberFormField() {
     return TextFormField(
       keyboardType: TextInputType.number,
@@ -63,11 +233,29 @@ class _PhoneFormState extends State<PhoneForm> {
         fontSize: getProportionateScreenWidth(16));
   }
 
+  void nextFocus(
+      {String? value, FocusNode? nextFocusNode, FocusNode? previousFocusNode}) {
+    if (value!.length == 1) {
+      nextFocusNode!.requestFocus();
+    }
+    if (value.length == 0) {
+      previousFocusNode!.requestFocus();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    pin1FocusNode = FocusNode();
+    pin2FocusNode = FocusNode();
+    pin3FocusNode = FocusNode();
+    pin4FocusNode = FocusNode();
+    pin5FocusNode = FocusNode();
 
-    KeyboardVisibilityController().onChange.listen((isVisible) {
+    pin6FocusNode = FocusNode();
+
+    keyboardSubscription =
+        KeyboardVisibilityController().onChange.listen((isVisible) {
       if (isVisible) {
         final viewInsets = EdgeInsets.fromWindowPadding(
             WidgetsBinding.instance!.window.viewInsets,
@@ -85,71 +273,138 @@ class _PhoneFormState extends State<PhoneForm> {
 
   @override
   void dispose() {
+    pin1FocusNode.dispose();
+    pin2FocusNode.dispose();
+    pin3FocusNode.dispose();
+    pin4FocusNode.dispose();
+    pin5FocusNode.dispose();
+    pin6FocusNode.dispose();
+
     KeyboardVisibilityController().onChange.listen((isVisible) {}).cancel();
+    keyboardSubscription.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Row(
+    return BlocConsumer<PhoneAuthenticationCubit, PhoneAuthenticationState>(
+      listener: (context, state) {
+        if (state is PhoneAuthenticationSuccess) {
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+          buildToast('Verification Success');
+        }
+      },
+      builder: (context, state) {
+        if (state is PhoneAuthenticationLoading) {
+          return LoadingIndicator();
+        } else if (state is PhoneAuthenticationOTPSent) {
+          isVerification = true;
+        }
+        return Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconImage(
-                height: 24.0,
-                width: 34.0,
-                image: "assets/images/eg_flag.png",
-              ),
-              SizedBox(
-                width: getProportionateScreenWidth(10),
-              ),
               Text(
-                '‎+20',
+                isVerification
+                    ? 'Enter your 4-digit code'
+                    : 'Enter your mobile number',
                 style: TextStyle(
                     color: Colors.black,
+                    fontSize: getProportionateScreenWidth(26),
+                    fontFamily: 'Gilroy',
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: getProportionateScreenHeight(20),
+              ),
+              Text(
+                isVerification ? 'Code' : 'Mobile Number',
+                style: TextStyle(
+                    color: Colors.grey,
                     fontSize: getProportionateScreenWidth(18),
                     fontFamily: 'Gilroy',
-                    fontWeight: FontWeight.normal),
+                    fontWeight: FontWeight.bold),
               ),
+              SizedBox(
+                height: getProportionateScreenHeight(20),
+              ),
+              isVerification ? buildVerificationField() : buildNumberField(),
               SizedBox(
                 width: getProportionateScreenWidth(10),
               ),
-              Expanded(child: buildNumberFormField()),
+              SizedBox(
+                height: getProportionateScreenHeight(430) -
+                    getProportionateScreenHeight(keyboardHeight),
+              ),
+              isVerification
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            'Resend Code',
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontSize: getProportionateScreenWidth(18),
+                                fontFamily: 'Gilroy',
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        FloatingActionButton(
+                          onPressed: () async {
+                            // Navigator.pop(context);
+                            // Navigator.pushNamed(
+                            //     context, SelectLocationScreen.routeName);
+                            // AuthCredential credential =
+                            //     PhoneAuthProvider.credential(
+                            //         verificationId: verificationId1,
+                            //         smsCode: verificationCode);
+
+                            // UserCredential result =
+                            //     await _auth.signInWithCredential(credential);
+
+                            // User user = result.user!;
+                            // print(user);
+                            // if (user.uid.isNotEmpty) {
+                            //   Navigator.pushReplacementNamed(
+                            //       context, HomeScreen.routeName);
+                            //   buildToast('Verification done');
+                            // }
+                            BlocProvider.of<PhoneAuthenticationCubit>(context)
+                                .login(verificationCode);
+                          },
+                          child: Icon(Icons.arrow_forward_ios),
+                          backgroundColor: MyColors.myGreen,
+                        )
+                      ],
+                    )
+                  : Align(
+                      alignment: Alignment.bottomRight,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            // setState(() {
+                            //   isVerification = true;
+                            // });
+                            //       // if all is go well go to login success screen
+                            phone = dialogCodeDigit.trim() + phone.trim();
+                            print(phone);
+                            //           loginUser(phone);
+                            BlocProvider.of<PhoneAuthenticationCubit>(context)
+                                .sendOTP(phone);
+                          }
+                        },
+                        child: Icon(Icons.arrow_forward_ios),
+                        backgroundColor: MyColors.myGreen,
+                      ),
+                    )
             ],
           ),
-          SizedBox(
-            width: getProportionateScreenWidth(10),
-          ),
-          SizedBox(
-            height: getProportionateScreenHeight(430) -
-                getProportionateScreenHeight(keyboardHeight),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: FloatingActionButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  //       // if all is go well go to login success screen
-                }
-              },
-              child: Icon(Icons.arrow_forward_ios),
-              backgroundColor: MyColors.myGreen,
-            ),
-          )
-          // CustomButton(
-          //   text: 'Get Started',
-          //   onPressed: () {
-          //     if (_formKey.currentState!.validate()) {
-          //       _formKey.currentState!.save();
-          //       // if all is go well go to login success screen
-          //     }
-          //   },
-          // ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
