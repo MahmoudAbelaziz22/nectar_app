@@ -22,8 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
-<<<<<<< HEAD
-=======
   bloc:
     dependency: transitive
     description:
@@ -31,7 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.1"
->>>>>>> sign-in
   boolean_selector:
     dependency: transitive
     description:
@@ -334,8 +331,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-<<<<<<< HEAD
-=======
   modal_bottom_sheet:
     dependency: transitive
     description:
@@ -350,7 +345,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
->>>>>>> sign-in
   path:
     dependency: transitive
     description:
