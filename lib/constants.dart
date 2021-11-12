@@ -20,3 +20,8 @@ const String kTooShortAddressError = "The address is too short";
 
 final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
+const String baseUrl =
+    "https://nectar-ac16a-default-rtdb.firebaseio.com/products.json";
+
+const kAnimationDuration = Duration(milliseconds: 200);
