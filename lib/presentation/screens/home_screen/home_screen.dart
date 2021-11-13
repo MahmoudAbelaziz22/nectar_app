@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nectar_app/constants.dart';
+import 'package:nectar_app/presentation/screens/product_details_screen/product_details_screen.dart';
 import 'package:nectar_app/presentation/widgets/icon_image.dart';
 import 'package:nectar_app/presentation/widgets/product_card.dart';
 import 'package:nectar_app/size_cofig.dart';
@@ -240,7 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   TextBar(
                     text: 'Exclusive Offer',
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context, ProductDetailsScreen.routeName);
+                    },
                   ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
