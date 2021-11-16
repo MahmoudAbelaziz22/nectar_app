@@ -15,6 +15,7 @@ import 'package:nectar_app/data/web_services/facebook_authentication_services.da
 import 'package:nectar_app/data/web_services/google_authentication_services.dart';
 import 'package:nectar_app/data/web_services/phone_authentication_services.dart';
 import 'package:nectar_app/data/web_services/products_services.dart';
+import 'package:nectar_app/presentation/screens/category_products_screen/categort_products_screen.dart';
 import 'package:nectar_app/presentation/screens/home_screen/home_screen.dart';
 import 'package:nectar_app/presentation/screens/number_screen/number_screen.dart';
 import 'package:nectar_app/presentation/screens/onBording_Screen/onBording_screen.dart';
@@ -91,6 +92,9 @@ class AppRouter {
                 ));
       case ProductDetailsScreen.routeName:
         return MaterialPageRoute(builder: (_) => ProductDetailsScreen());
+
+      case CategoryProductsScreen.routeName:
+        return MaterialPageRoute(builder: (_) => CategoryProductsScreen());
     }
   }
 }

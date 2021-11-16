@@ -28,7 +28,6 @@ class NectarApp extends StatelessWidget {
             focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: MyColors.myGreen)),
           ),
-          backgroundColor: MyColors.myWhite,
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: MyColors.myGreen,
           )),
