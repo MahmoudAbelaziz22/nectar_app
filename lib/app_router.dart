@@ -19,6 +19,7 @@ import 'package:nectar_app/presentation/screens/category_products_screen/categor
 import 'package:nectar_app/presentation/screens/home_screen/home_screen.dart';
 import 'package:nectar_app/presentation/screens/number_screen/number_screen.dart';
 import 'package:nectar_app/presentation/screens/onBording_Screen/onBording_screen.dart';
+import 'package:nectar_app/presentation/screens/order_accepted_screen/order_accepted_screen.dart';
 import 'package:nectar_app/presentation/screens/product_details_screen/product_details_screen.dart';
 import 'package:nectar_app/presentation/screens/select_location_screen/select_location_screen.dart';
 import 'package:nectar_app/presentation/screens/sign_in_screen/sign_in_screen.dart';
@@ -95,6 +96,9 @@ class AppRouter {
 
       case CategoryProductsScreen.routeName:
         return MaterialPageRoute(builder: (_) => CategoryProductsScreen());
+
+      case OrderAcceptedScreen.routeName:
+        return MaterialPageRoute(builder: (_) => OrderAcceptedScreen());
     }
   }
 }
