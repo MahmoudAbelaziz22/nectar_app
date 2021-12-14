@@ -13,6 +13,7 @@ class ProductsWebServices {
       Response response = await _dio.get(baseUrl);
       if (response.statusCode == 200) {
         var jsonData = response.data;
+
         return jsonData;
       } else {
         print('Error Ocurred with StatusCode= ${response.statusCode}');

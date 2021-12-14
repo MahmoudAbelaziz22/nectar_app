@@ -15,9 +15,9 @@ class ProductsLoaded extends ProductsState {
 }
 
 class ProductsOffersLoaded extends ProductsState {
-  final List<Product> offerProducts;
+  final Map products;
   ProductsOffersLoaded({
-    required this.offerProducts,
+    required this.products,
   });
 }
 

@@ -118,7 +118,13 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.7),
-                  itemBuilder: (context, index) => ProductCard(),
+                  itemBuilder: (context, index) => ProductCard(
+                    productName: 'Red Apple',
+                    productImgUrl: 'assets/images/apple.png',
+                    productPriceage: '1kg, Priceg',
+                    productPrice: 4.99,
+                    onAdded: () {},
+                  ),
                 ),
               )
             ],

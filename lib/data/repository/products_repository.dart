@@ -7,9 +7,11 @@ class ProductRepository {
   ProductRepository(this._productsWebServices);
 
   Future<List<Product>> getAllProducts() async {
-    final productWebServicesData = await _productsWebServices.getAllProducts();
+    List<dynamic> productWebServicesData =
+        await _productsWebServices.getAllProducts();
     List<Product> allProducts =
         productWebServicesData.map((e) => Product.fromJson(e)).toList();
+
     return allProducts;
   }
 
@@ -20,10 +22,10 @@ class ProductRepository {
     return _cateoryProducts;
   }
 
-  Future<List<Product>> getOffersProducts() async {
+  Future<Map> getOffersProducts() async {
     List<Product> _allProducts = await getAllProducts();
     List<Product> _offersProducts =
         _allProducts.where((product) => product.offer != 0).toList();
-    return _offersProducts;
+    return {'allProducts': _allProducts, 'offersProducts': _offersProducts};
   }
 }

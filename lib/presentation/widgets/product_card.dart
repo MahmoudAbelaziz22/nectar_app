@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:nectar_app/presentation/widgets/network_icon_image.dart';
 
 import '../../constants.dart';
 import '../../size_cofig.dart';
 import 'icon_image.dart';
 
 class ProductCard extends StatelessWidget {
+  final String productName;
+  final String productPriceage;
+  final String productImgUrl;
+  final double productPrice;
+  final VoidCallback onAdded;
+
   const ProductCard({
     Key? key,
+    required this.productName,
+    required this.productPriceage,
+    required this.productImgUrl,
+    required this.productPrice,
+    required this.onAdded,
   }) : super(key: key);
 
   @override
@@ -24,17 +36,19 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: IconImage(
-                  width: getProportionateScreenWidth(103.5),
-                  height: getProportionateScreenWidth(103.5),
-                  image: 'assets/images/apple.png'),
+              child: NetworkIconImage(
+                  width: getProportionateScreenWidth(100),
+                  height: getProportionateScreenWidth(100),
+                  image: productImgUrl),
             ),
             Spacer(),
             Text(
-              'Red Apple',
+              productName,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: getProportionateScreenWidth(16),
+                  fontSize: getProportionateScreenWidth(14),
                   fontFamily: 'Gilroy',
                   fontWeight: FontWeight.bold),
             ),
@@ -42,10 +56,10 @@ class ProductCard extends StatelessWidget {
               height: getProportionateScreenHeight(5),
             ),
             Text(
-              '1kg, Priceg',
+              productPriceage,
               style: TextStyle(
                   color: Colors.grey,
-                  fontSize: getProportionateScreenWidth(14),
+                  fontSize: getProportionateScreenWidth(12),
                   fontFamily: 'Gilroy',
                   fontWeight: FontWeight.bold),
             ),
@@ -55,17 +69,17 @@ class ProductCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$4.99',
+                  '\$$productPrice',
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: getProportionateScreenWidth(18),
+                      fontSize: getProportionateScreenWidth(16),
                       fontFamily: 'Gilroy',
                       fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
                 Container(
-                  width: getProportionateScreenWidth(45.67),
-                  height: getProportionateScreenWidth(45.67),
+                  width: getProportionateScreenWidth(40),
+                  height: getProportionateScreenWidth(40),
                   decoration: BoxDecoration(
                       color: MyColors.myGreen,
                       borderRadius: BorderRadius.circular(15)),

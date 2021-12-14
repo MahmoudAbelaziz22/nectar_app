@@ -25,8 +25,8 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<void> getOffersProducts() async {
     emit(ProductsLoading());
-    _productRepository.getOffersProducts().then((offerProducts) {
-      emit(ProductsOffersLoaded(offerProducts: offerProducts));
+    _productRepository.getOffersProducts().then((products) {
+      emit(ProductsOffersLoaded(products: products));
     });
   }
 }

@@ -5,9 +5,13 @@ import '../../../../size_cofig.dart';
 
 class HorizontalCategoryCard extends StatelessWidget {
   final Color color;
+  final String categoryName;
+  final String categoryImgUrl;
   const HorizontalCategoryCard({
     Key? key,
     required this.color,
+    required this.categoryName,
+    required this.categoryImgUrl,
   }) : super(key: key);
 
   @override
@@ -28,19 +32,23 @@ class HorizontalCategoryCard extends StatelessWidget {
               child: IconImage(
                   width: getProportionateScreenWidth(103.5),
                   height: getProportionateScreenWidth(103.5),
-                  image: 'assets/images/apple.png'),
+                  image: categoryImgUrl),
             ),
             SizedBox(
               width: getProportionateScreenWidth(20),
             ),
-            Center(
-              child: Text(
-                'Red Apple',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: getProportionateScreenWidth(16),
-                    fontFamily: 'Gilroy',
-                    fontWeight: FontWeight.bold),
+            Expanded(
+              child: Center(
+                child: Text(
+                  categoryName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: getProportionateScreenWidth(16),
+                      fontFamily: 'Gilroy',
+                      fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],

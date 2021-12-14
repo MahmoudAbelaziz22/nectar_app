@@ -1,15 +1,6 @@
 import 'package:nectar_app/data/model/image.dart';
 
 class Product {
-  String? category;
-  String? describtion;
-  int? id;
-  Images? images;
-  int? offer;
-  double? price;
-  String? priceg;
-  String? productName;
-
   Product(
       {this.category,
       this.describtion,
@@ -31,6 +22,15 @@ class Product {
     this.priceg = json["priceg"];
     this.productName = json["productName"];
   }
+
+  String? category;
+  String? describtion;
+  int? id;
+  Images? images;
+  double? offer;
+  double? price;
+  String? priceg;
+  String? productName;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
