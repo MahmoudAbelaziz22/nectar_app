@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nectar_app/buiness_logic/cart_cubit/cart_cubit.dart';
 import 'package:nectar_app/buiness_logic/products_cubit/products_cubit.dart';
+import 'package:nectar_app/data/model/cart_item.dart';
 import 'package:nectar_app/data/model/product.dart';
 import 'package:nectar_app/presentation/screens/home_screen/components/text_bar.dart';
 import 'package:nectar_app/presentation/screens/product_details_screen/product_details_screen.dart';
@@ -81,6 +84,17 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  _buildToast(String text) {
+    Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: MyColors.myGreen,
+        textColor: Colors.white,
+        fontSize: getProportionateScreenWidth(16));
+  }
+
   SingleChildScrollView _buildProductsHorizonalList(
       {required List<Product> products}) {
     return SingleChildScrollView(
@@ -94,7 +108,19 @@ class _HomeViewState extends State<HomeView> {
                         productPriceage: product.priceg!,
                         productImgUrl: product.images!.img1!,
                         productPrice: product.price!,
-                        onAdded: () {}),
+                        onAdded: () {
+                          CartItem cartItem = CartItem(
+                            productId: product.id,
+                            productName: product.productName,
+                            productPriceg: product.priceg,
+                            productImage: product.images!.img1,
+                            productPrice: product.price,
+                            quantity: 1,
+                          );
+                          BlocProvider.of<CartCubit>(context)
+                              .addProductToCart(cartItem);
+                          _buildToast('addeddddd');
+                        }),
                   ))
               .toList()),
     );
@@ -130,7 +156,20 @@ class _HomeViewState extends State<HomeView> {
                         productPriceage: product.priceg!,
                         productImgUrl: product.images!.img1!,
                         productPrice: product.price!,
-                        onAdded: () {}),
+                        onAdded: () {
+                          CartItem cartItem = CartItem(
+                            productId: product.id,
+                            productName: product.productName,
+                            productPriceg: product.priceg,
+                            productImage: product.images!.img1,
+                            productPrice: product.price,
+                            quantity: 1,
+                          );
+                          BlocProvider.of<CartCubit>(context)
+                              .addProductToCart(cartItem);
+                          // print('addddddddddddd');
+                          _buildToast('addeddddd');
+                        }),
                   ))
               .toList()),
     );

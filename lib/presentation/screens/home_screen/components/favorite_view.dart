@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nectar_app/presentation/widgets/custom_button.dart';
 
 import '../../../../size_cofig.dart';
-import 'favprite_item_card.dart';
+import 'favorite_item_card.dart';
 
 class FavoriteView extends StatelessWidget {
   const FavoriteView({Key? key}) : super(key: key);

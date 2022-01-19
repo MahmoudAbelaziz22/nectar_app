@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nectar_app/data/model/category_products.dart';
+import 'package:nectar_app/data/model/product.dart';
 import 'package:nectar_app/presentation/widgets/custom_back_button.dart';
 import 'package:nectar_app/presentation/widgets/product_card.dart';
 
@@ -8,7 +10,9 @@ import '../../../size_cofig.dart';
 
 class CategoryProductsScreen extends StatefulWidget {
   static const String routeName = '/category_product';
-  const CategoryProductsScreen({Key? key}) : super(key: key);
+  final CategoryPtoducts categoryPtoducts;
+  const CategoryProductsScreen({Key? key, required this.categoryPtoducts})
+      : super(key: key);
 
   @override
   State<CategoryProductsScreen> createState() => _CategoryProductsScreenState();
@@ -17,6 +21,7 @@ class CategoryProductsScreen extends StatefulWidget {
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   var _controller = TextEditingController();
   bool isSearch = false;
+
   buildSearchBar() {
     return Container(
       width: SizeConfig.screenWidth! - 100,
@@ -67,6 +72,8 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.categoryPtoducts.categoryProducts);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -90,7 +97,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                   isSearch
                       ? buildSearchBar()
                       : Text(
-                          'Beverages',
+                          widget.categoryPtoducts.categoryName,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: getProportionateScreenWidth(20),
@@ -111,7 +118,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
               ),
               Expanded(
                 child: GridView.builder(
-                  itemCount: 8,
+                  itemCount: widget.categoryPtoducts.categoryProducts.length,
                   padding: const EdgeInsets.all(10),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -119,10 +126,14 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.7),
                   itemBuilder: (context, index) => ProductCard(
-                    productName: 'Red Apple',
-                    productImgUrl: 'assets/images/apple.png',
-                    productPriceage: '1kg, Priceg',
-                    productPrice: 4.99,
+                    productName: widget
+                        .categoryPtoducts.categoryProducts[index].productName!,
+                    productImgUrl: widget
+                        .categoryPtoducts.categoryProducts[index].images!.img1!,
+                    productPriceage:
+                        widget.categoryPtoducts.categoryProducts[index].priceg!,
+                    productPrice:
+                        widget.categoryPtoducts.categoryProducts[index].price!,
                     onAdded: () {},
                   ),
                 ),

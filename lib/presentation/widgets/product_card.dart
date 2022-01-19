@@ -37,8 +37,8 @@ class ProductCard extends StatelessWidget {
           children: [
             Center(
               child: NetworkIconImage(
-                  width: getProportionateScreenWidth(100),
-                  height: getProportionateScreenWidth(100),
+                  width: getProportionateScreenWidth(80),
+                  height: getProportionateScreenWidth(80),
                   image: productImgUrl),
             ),
             Spacer(),
@@ -86,7 +86,7 @@ class ProductCard extends StatelessWidget {
                   child: IconButton(
                     color: Colors.white,
                     iconSize: getProportionateScreenWidth(17),
-                    onPressed: () {},
+                    onPressed: onAdded,
                     icon: Icon(Icons.add),
                   ),
                 )

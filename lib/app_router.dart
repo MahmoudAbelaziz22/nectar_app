@@ -2,11 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:nectar_app/buiness_logic/cart_cubit/cart_cubit.dart';
 import 'package:nectar_app/buiness_logic/facebook_authentication_cubit/facebook_authentication_cubit.dart';
 
 import 'package:nectar_app/buiness_logic/google_authentication_cubit/cubit/google_authentication_cubit.dart';
 import 'package:nectar_app/buiness_logic/phone_authentication_cubit/phone_authentication_cubit.dart';
 import 'package:nectar_app/buiness_logic/products_cubit/products_cubit.dart';
+import 'package:nectar_app/data/local_database/local_db_helper.dart';
+import 'package:nectar_app/data/repository/cart_repository.dart';
 import 'package:nectar_app/data/repository/facebook_authentication_repository.dart';
 import 'package:nectar_app/data/repository/google_authentication_repository.dart';
 import 'package:nectar_app/data/repository/phone_authentication_repository.dart';
@@ -25,6 +28,8 @@ import 'package:nectar_app/presentation/screens/select_location_screen/select_lo
 import 'package:nectar_app/presentation/screens/sign_in_screen/sign_in_screen.dart';
 import 'package:nectar_app/presentation/screens/sign_up_screen/sign_up_screen.dart';
 
+import 'data/model/category_products.dart';
+
 class AppRouter {
   late GoogleSignInRepository googleSignInRepository;
   late GoogleAuthenticationCubit googleauthenticationCubit;
@@ -34,6 +39,8 @@ class AppRouter {
   late PhoneAuthenticationCubit phoneAuthenticationCubit;
   late ProductRepository productRepository;
   late ProductsCubit productsCubit;
+  late CartRepository cartRepository;
+  late CartCubit cartCubit;
   AppRouter() {
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -56,6 +63,9 @@ class AppRouter {
 
     productRepository = ProductRepository(ProductsWebServices());
     productsCubit = ProductsCubit(productRepository);
+
+    cartRepository = CartRepository(LocalDbHelper());
+    cartCubit = CartCubit(cartRepository);
   }
 
   Route? generateRoute(RouteSettings settings) {
@@ -87,15 +97,26 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => SignUpScreen());
       case HomeScreen.routeName:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) => productsCubit,
+            builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => productsCubit,
+                    ),
+                    BlocProvider(
+                      create: (context) => cartCubit,
+                    ),
+                  ],
                   child: HomeScreen(),
                 ));
       case ProductDetailsScreen.routeName:
         return MaterialPageRoute(builder: (_) => ProductDetailsScreen());
 
       case CategoryProductsScreen.routeName:
-        return MaterialPageRoute(builder: (_) => CategoryProductsScreen());
+        final categoryProducts = settings.arguments as CategoryPtoducts;
+        return MaterialPageRoute(
+            builder: (_) => CategoryProductsScreen(
+                  categoryPtoducts: categoryProducts,
+                ));
 
       case OrderAcceptedScreen.routeName:
         return MaterialPageRoute(builder: (_) => OrderAcceptedScreen());

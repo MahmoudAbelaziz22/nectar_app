@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nectar_app/presentation/widgets/loading_indicator.dart';
 
 import '../../size_cofig.dart';
 
@@ -20,18 +21,9 @@ class NetworkIconImage extends StatelessWidget {
       height: getProportionateScreenHeight(height),
       width: getProportionateScreenWidth(width),
       child: CachedNetworkImage(
-        placeholder: (context, url) => const CircularProgressIndicator(),
+        placeholder: (context, url) => const LoadingIndicator(),
         imageUrl: image,
       ),
-      //  FadeInImage.assetNetwork(
-      //   fit: BoxFit.fill,
-      //   placeholder: 'assets/images/apple.png',
-      //   image: image,
-      // ),
     );
   }
 }
-// CachedNetworkImage(
-//       placeholder: (context, url) => const CircularProgressIndicator(),
-//       imageUrl: 'https://somepicurl',
-//     ),
